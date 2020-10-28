@@ -1,33 +1,79 @@
 import * as React from 'react';
-import { Text, View } from 'react-native';
+import { Button, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createStackNavigator } from '@react-navigation/stack';
+import { FlatList } from 'react-native-gesture-handler';
 
-function HomeScreen() {
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Home</Text>
-    </View>
-  );
+class ChatScreen extends React.Component {
+  render() {
+    return (
+      <View style={{ padding: 10 }}>
+        <Text>Chat with {this.props.route.params.name}</Text>
+      </View>
+    );
+  }
 }
 
-function SettingsScreen() {
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Settings</Text>
-    </View>
-  );
+class ChatsListScreen extends React.Component {
+  render() {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <FlatList
+          data={[ {name: "Person1", key: "1"}, {name: "Person2", key: "2"}]}
+          renderItem={(data) => {
+            return (
+              <View key={data.item.key} style={{ margin: 10 }}>
+                <Button
+                  title={data.item.name}
+                  onPress={() => this.props.navigation.navigate("Chat", { name: data.item.name })}
+                />
+              </View>
+            );
+          }}
+        />
+      </View>
+    );
+  }
 }
 
-const Tab = createBottomTabNavigator();
+const ChatsStack = createStackNavigator();
 
-export default function App() {
-  return (
-    <NavigationContainer>
-      <Tab.Navigator>
-        <Tab.Screen name="Home" component={HomeScreen} />
-        <Tab.Screen name="Settings" component={SettingsScreen} />
-      </Tab.Navigator>
-    </NavigationContainer>
-  );
+class ChatsScreenStack extends React.Component {
+  render() {
+    return (
+      <ChatsStack.Navigator>
+        <ChatsStack.Screen name="Chats" component={ChatsListScreen} />
+        <ChatsStack.Screen name="Chat" component={ChatScreen} />
+      </ChatsStack.Navigator>
+    );
+  }
+}
+
+class HomeScreen extends React.Component {
+  render() {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Button
+          title="Navigate to Person2"
+          onPress={() => this.props.navigation.navigate("ChatsTab", { screen: "Chat", params: { name: "Person2" }})}
+        />
+      </View>
+    );
+  }
+}
+
+const Tabs = createBottomTabNavigator();
+
+export default class App extends React.Component {
+  render() {
+    return (
+      <NavigationContainer>
+        <Tabs.Navigator>
+          <Tabs.Screen name="HomeTab" component={HomeScreen} />
+          <Tabs.Screen name="ChatsTab" component={ChatsScreenStack} />
+        </Tabs.Navigator>
+      </NavigationContainer>
+    );
+  }
 }
