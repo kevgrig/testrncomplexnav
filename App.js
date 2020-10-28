@@ -1,9 +1,8 @@
 import * as React from 'react';
-import { Button, Text, View } from 'react-native';
+import { Button, FlatList, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
-import { FlatList } from 'react-native-gesture-handler';
 
 class ChatScreen extends React.Component {
   render() {
