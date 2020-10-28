@@ -40,6 +40,33 @@ class ChatsListScreen extends React.Component {
 const ChatsStack = createStackNavigator();
 
 class ChatsScreenStack extends React.Component {
+  constructor(props) {
+    super(props);
+
+    if (props.route && props.route.params && props.route.params.name) {
+      this.pendingReroute = props.route.params.name;
+    }
+  }
+
+  componentDidMount() {
+    if (this.pendingReroute) {
+      this.props.navigation.navigate("Chat", { name: this.pendingReroute });
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    let updated = false;
+    if (this.props.route && this.props.route.params.name) {
+      updated = true;
+      if (prevProps.route && prevProps.route.params && prevProps.route.params.name == this.props.route.params.name) {
+        updated = false;
+      }
+    }
+    if (updated) {
+      this.props.navigation.navigate("Chat", { name: this.props.route.params.name });
+    }
+  }
+
   render() {
     return (
       <ChatsStack.Navigator>
@@ -56,7 +83,7 @@ class HomeScreen extends React.Component {
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <Button
           title="Navigate to Person2"
-          onPress={() => this.props.navigation.navigate("ChatsTab", { screen: "Chat", params: { name: "Person2" }})}
+          onPress={() => this.props.navigation.navigate("ChatsTab", { name: "Person2" })}
         />
       </View>
     );
